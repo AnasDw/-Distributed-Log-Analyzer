@@ -2,6 +2,7 @@ package src.analyzers;
 
 import org.json.JSONObject;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 import src.domain.LogEntry;
 
 import java.time.Duration;
@@ -20,8 +21,8 @@ public class AnomalyDetector implements LogAnalyzer {
     }
 
     @Override
-    public String getName() {
-        return "DETECT_ANOMALIES";
+    public AnalyzerType getName() {
+        return AnalyzerType.DETECT_ANOMALIES;
     }
 
     @Override

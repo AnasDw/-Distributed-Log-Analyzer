@@ -2,6 +2,7 @@ package src.tasks;
 
 import org.json.JSONObject;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 import src.domain.LogEntry;
 import src.parsers.LogParser;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.Callable;
 /**
  * Processes one log file: parses and analyzes it using provided analyzers.
  */
-public class LogFileProcessingTask implements Callable<Map<String, JSONObject>> {
+public class LogFileProcessingTask implements Callable<Map<AnalyzerType, JSONObject>> {
 
     private final File logFile;
     private final List<LogAnalyzer> analyzers;
@@ -31,9 +32,9 @@ public class LogFileProcessingTask implements Callable<Map<String, JSONObject>> 
     }
 
     @Override
-    public Map<String, JSONObject> call() {
+    public Map<AnalyzerType, JSONObject> call() {
         List<LogEntry> entries = new ArrayList<>();
-        Map<String, JSONObject> results = new HashMap<>();
+        Map<AnalyzerType, JSONObject> results = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;

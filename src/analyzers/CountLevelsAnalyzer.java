@@ -2,6 +2,7 @@ package src.analyzers;
 
 import org.json.JSONObject;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 import src.domain.LogEntry;
 
 import java.util.HashMap;
@@ -11,8 +12,8 @@ import java.util.Map;
 public class CountLevelsAnalyzer implements LogAnalyzer {
 
     @Override
-    public String getName() {
-        return "COUNT_LEVELS";
+    public AnalyzerType getName() {
+        return AnalyzerType.COUNT_LEVELS;
     }
 
     @Override

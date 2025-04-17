@@ -3,6 +3,7 @@ package src;
 import org.json.JSONObject;
 import src.analyzers.factory.AnalyzerFactory;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 import src.exceptions.ConfigurationLoadException;
 import src.exceptions.InvalidLogPathException;
 import src.providers.ConfigManagerProvider;
@@ -11,6 +12,8 @@ import src.providers.ThreadPoolExecutorProvider;
 import src.services.FileReaderService;
 import src.services.ReportAggregatorService;
 import src.tasks.LogFileProcessingTask;
+import src.utils.ExitCodes;
+import src.utils.Timer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,6 +36,9 @@ public class Main {
 
     public static void main(String[] args) {
         try {
+            Timer timer = new Timer();
+            timer.start();
+
             // Load configuration
             ConfigManagerProvider config = new ConfigManagerProvider(CONFIG_FILE);
 
@@ -54,18 +60,18 @@ public class Main {
             ExecutorService executor = executorProvider.getExecutorService();
 
             // Submit file processing tasks (parse + analyze per file)
-            List<Future<Map<String, JSONObject>>> futures = new ArrayList<>();
+            List<Future<Map<AnalyzerType, JSONObject>>> futures = new ArrayList<>();
             for (File logFile : logFiles) {
                 futures.add(executor.submit(new LogFileProcessingTask(logFile, analyzers)));
             }
 
             // Collect all results per file
-            List<Map<String, JSONObject>> allResults = new ArrayList<>();
+            List<Map<AnalyzerType, JSONObject>> allResults = new ArrayList<>();
             List<String> fileNames = new ArrayList<>();
 
             for (int i = 0; i < futures.size(); i++) {
                 try {
-                    Map<String, JSONObject> result = futures.get(i).get();
+                    Map<AnalyzerType, JSONObject> result = futures.get(i).get();
                     allResults.add(result);
                     fileNames.add(logFiles.get(i).getName());
                 } catch (Exception e) {
@@ -86,12 +92,16 @@ public class Main {
 
             executorProvider.shutdown();
 
+            timer.stopAndPrint("Log analysis");
+
+            System.exit(ExitCodes.SUCCESS);
         } catch (ConfigurationLoadException | InvalidLogPathException e) {
             System.out.println(e.getMessage());
-            System.exit(1);
+            System.exit(ExitCodes.ERROR);
         } catch (Exception e) {
             System.out.println("❌ Unexpected error: " + e.getMessage());
             e.printStackTrace();
+            System.exit(ExitCodes.ERROR);
         }
     }
 }

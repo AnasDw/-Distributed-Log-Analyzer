@@ -1,0 +1,53 @@
+{
+    "COUNT_LEVELS": {
+        "error": 286672,
+        "warning": 286537,
+        "info": 286482
+    },
+    "DETECT_ANOMALIES": [{
+        "logfile_383.log": {
+            "anomalies": ["2028-05-31T02:56:11"],
+            "anomalies_count": 1
+        },
+        "logfile_279.log": {
+            "anomalies": ["2027-07-26T12:55:59"],
+            "anomalies_count": 1
+        },
+        "logfile_91.log": {
+            "anomalies": ["2026-01-09T23:14:10"],
+            "anomalies_count": 1
+        },
+        "logfile_268.log": {
+            "anomalies": ["2027-06-23T02:32:48"],
+            "anomalies_count": 1
+        },
+        "logfile_412.log": {
+            "anomalies": ["2028-08-25T18:19:58"],
+            "anomalies_count": 1
+        },
+        "logfile_174.log": {
+            "anomalies": ["2026-09-15T17:20:09"],
+            "anomalies_count": 1
+        },
+        "logfile_51.log": {
+            "anomalies": ["2025-09-10T19:27:31"],
+            "anomalies_count": 1
+        },
+        "logfile_464.log": {
+            "anomalies": ["2029-01-28T18:07:15"],
+            "anomalies_count": 1
+        },
+        "logfile_471.log": {
+            "anomalies": ["2029-02-18T16:58:43"],
+            "anomalies_count": 1
+        }
+    }],
+    "FIND_COMMON_SOURCE": {
+        "least_common_source_count": 221,
+        "sources": "[Server1, Server2, Database, LoadBalancer, Server3, Server4, Cache]",
+        "source_counts": "[227, 257, 263, 221, 259, 243, 249]",
+        "most_common_source": "Database",
+        "least_common_source": "LoadBalancer",
+        "most_common_source_count": 263
+    }
+}

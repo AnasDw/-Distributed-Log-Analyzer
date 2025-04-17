@@ -2,6 +2,7 @@ package src.analyzers;
 
 import org.json.JSONObject;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 import src.domain.LogEntry;
 
 import java.util.*;
@@ -9,8 +10,8 @@ import java.util.*;
 public class CommonSourcesAnalyzer implements LogAnalyzer {
 
     @Override
-    public String getName() {
-        return "FIND_COMMON_SOURCE";
+    public AnalyzerType getName() {
+        return AnalyzerType.FIND_COMMON_SOURCE;
     }
 
     @Override

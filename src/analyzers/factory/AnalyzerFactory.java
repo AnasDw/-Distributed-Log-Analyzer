@@ -4,11 +4,12 @@ import src.analyzers.AnomalyDetector;
 import src.analyzers.CommonSourcesAnalyzer;
 import src.analyzers.CountLevelsAnalyzer;
 import src.analyzers.interfaces.LogAnalyzer;
+import src.analyzers.types.AnalyzerType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Creates LogAnalyzer instances based on configuration.
@@ -33,28 +34,22 @@ public class AnalyzerFactory {
         List<LogAnalyzer> analyzers = new ArrayList<>();
 
         for (String type : types) {
-            switch (type.trim().toUpperCase()) {
-                case "COUNT_LEVELS":
-                    analyzers.add(new CountLevelsAnalyzer());
-                    break;
-
-                case "FIND_COMMON_SOURCE":
-                    analyzers.add(new CommonSourcesAnalyzer());
-                    break;
-
-                case "DETECT_ANOMALIES":
-                    Set<String> levelsSet = new HashSet<>();
-                    for (String level : anomalyLevels) {
-                        levelsSet.add(level.trim().toUpperCase());
+            try {
+                switch (AnalyzerType.fromString(type)) {
+                    case COUNT_LEVELS -> analyzers.add(new CountLevelsAnalyzer());
+                    case FIND_COMMON_SOURCE -> analyzers.add(new CommonSourcesAnalyzer());
+                    case DETECT_ANOMALIES -> {
+                        Set<String> levelsSet = anomalyLevels.stream()
+                                .map(String::toUpperCase)
+                                .collect(Collectors.toSet());
+                        analyzers.add(new AnomalyDetector(levelsSet, windowInSeconds, threshold));
                     }
-                    analyzers.add(new AnomalyDetector(levelsSet, windowInSeconds, threshold));
-                    break;
-
-                default:
-                    System.out.println("⚠️ Unknown analysis type: " + type);
-                    break;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("⚠️ Unknown analyzer type: " + type);
             }
         }
+
 
         return analyzers;
     }

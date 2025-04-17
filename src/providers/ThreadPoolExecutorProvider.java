@@ -35,6 +35,6 @@ public class ThreadPoolExecutorProvider {
      */
     public void shutdown() {
         executorService.shutdown();
-        System.out.println("🔚 Thread pool shut down.");
+        System.out.println("🔌 Thread pool shut down.");
     }
 }
