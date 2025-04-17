@@ -15,6 +15,14 @@ Designed to parse and analyze log files using customizable analyzers, then aggre
 
 ---
 
+## 🎯 Design Patterns Used
+
+- **Factory Pattern** – Used to create analyzers dynamically from config.
+- **Strategy Pattern** – Each `LogAnalyzer` implements a different analysis strategy.
+- **Thread Pool Pattern** – Manages parallel file processing using `ExecutorService`.
+
+---
+
 ## 🛠️ Setup
 
 1. Clone the repo:
@@ -25,6 +33,12 @@ Designed to parse and analyze log files using customizable analyzers, then aggre
    ```
 
 2. Build the project (e.g. with Maven or your IDE)
+
+---
+
+## 📚 Dependencies
+
+This project depends on the `org.json` library for working with JSON.
 
 ---
 
