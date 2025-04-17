@@ -4,7 +4,7 @@
         "warning": 286537,
         "info": 286482
     },
-    "DETECT_ANOMALIES": [{
+    "DETECT_ANOMALIES": {
         "logfile_383.log": {
             "anomalies": ["2028-05-31T02:56:11"],
             "anomalies_count": 1
@@ -41,7 +41,7 @@
             "anomalies": ["2029-02-18T16:58:43"],
             "anomalies_count": 1
         }
-    }],
+    },
     "FIND_COMMON_SOURCE": {
         "least_common_source_count": 221,
         "sources": "[Server1, Server2, Database, LoadBalancer, Server3, Server4, Cache]",

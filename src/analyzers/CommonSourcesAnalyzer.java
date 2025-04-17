@@ -7,6 +7,10 @@ import src.domain.LogEntry;
 
 import java.util.*;
 
+/**
+ * Analyzer that finds the most and least common log sources
+ * and includes counts for all encountered sources.
+ */
 public class CommonSourcesAnalyzer implements LogAnalyzer {
 
     @Override

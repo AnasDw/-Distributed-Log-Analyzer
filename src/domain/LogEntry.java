@@ -39,10 +39,7 @@ public class LogEntry {
     public String getSource() {
         return source;
     }
-
-    public String getMessage() {
-        return message;
-    }
+    
 
     @Override
     public String toString() {

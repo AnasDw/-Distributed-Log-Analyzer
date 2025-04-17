@@ -1,5 +1,6 @@
 package src.analyzers;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import src.analyzers.interfaces.LogAnalyzer;
 import src.analyzers.types.AnalyzerType;
@@ -8,11 +9,15 @@ import src.domain.LogEntry;
 import java.time.Duration;
 import java.util.*;
 
+/**
+ * Analyzer that detects bursts of target log levels (e.g., ERROR, WARN) within a time window.
+ * Flags timestamps where a threshold of logs occur in a short window.
+ */
 public class AnomalyDetector implements LogAnalyzer {
 
-    private final Set<String> targetLevels;
-    private final int windowInSeconds;
-    private final int threshold;
+    private final Set<String> targetLevels;   // Levels to watch (e.g., ERROR, WARN)
+    private final int windowInSeconds;        // Time window size
+    private final int threshold;              // Count threshold to trigger anomaly
 
     public AnomalyDetector(Set<String> levels, int windowInSeconds, int threshold) {
         this.targetLevels = levels;
@@ -28,24 +33,28 @@ public class AnomalyDetector implements LogAnalyzer {
     @Override
     public JSONObject analyze(List<LogEntry> entries) {
         JSONObject result = new JSONObject();
-        Map<String, List<String>> anomaliesByFile = new HashMap<>();
+        Set<String> anomalyTimestamps = new HashSet<>();
 
+        // Step 1: Filter only entries with the target levels
         List<LogEntry> filtered = new ArrayList<>();
         for (LogEntry entry : entries) {
+            if (entry.getLevel() == null || entry.getTimestamp() == null) continue;
             if (targetLevels.contains(entry.getLevel().toUpperCase())) {
                 filtered.add(entry);
             }
         }
 
-        // Sort by timestamp
+        // Step 2: Sort filtered logs by timestamp
         filtered.sort(Comparator.comparing(LogEntry::getTimestamp));
 
-        Set<String> anomalyTimestamps = new HashSet<>();
+        // Step 3: Sliding window to detect bursts of anomalies
         for (int i = 0; i < filtered.size(); i++) {
             int count = 1;
-            String current = filtered.get(i).getTimestamp().toString();
             for (int j = i + 1; j < filtered.size(); j++) {
-                Duration duration = Duration.between(filtered.get(i).getTimestamp(), filtered.get(j).getTimestamp());
+                Duration duration = Duration.between(
+                        filtered.get(i).getTimestamp(),
+                        filtered.get(j).getTimestamp()
+                );
                 if (duration.getSeconds() <= windowInSeconds) {
                     count++;
                 } else {
@@ -53,11 +62,14 @@ public class AnomalyDetector implements LogAnalyzer {
                 }
             }
             if (count >= threshold) {
-                anomalyTimestamps.add(current); // first log's timestamp in the window
+                anomalyTimestamps.add(filtered.get(i).getTimestamp().toString());
             }
         }
 
-        result.put("anomalies", anomalyTimestamps);
+        List<String> sortedAnomalies = new ArrayList<>(anomalyTimestamps);
+        Collections.sort(sortedAnomalies);
+
+        result.put("anomalies", new JSONArray(sortedAnomalies));
         result.put("anomalies_count", anomalyTimestamps.size());
 
         return result;
