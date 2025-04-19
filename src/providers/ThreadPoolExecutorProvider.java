@@ -17,6 +17,10 @@ public class ThreadPoolExecutorProvider {
      * @param poolSize the number of worker threads in the pool
      */
     public ThreadPoolExecutorProvider(int poolSize) {
+        if (poolSize <= 0) {
+            throw new IllegalArgumentException("Pool size must be greater than 0");
+        }
+        
         this.executorService = Executors.newFixedThreadPool(poolSize);
         System.out.println("🧵 Thread pool initialized with size: " + poolSize);
     }
